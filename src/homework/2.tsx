@@ -1,42 +1,72 @@
-import React, {useReducer} from "react";
+import React, { useReducer } from "react";
+
+type RequestStep = "idle" | "start" | "pending" | "finished";
+
+enum ActionTypes {
+  Start = "START_REQUEST",
+  Pending = "PENDING_REQUEST",
+  Finish = "FINISH_REQUEST",
+  Reset = "RESET_REQUEST",
+}
+
+// type ActionTypes =
+//   | "START_REQUEST"
+//   | "PENDING_REQUEST"
+//   | "FINISH_REQUEST"
+//   | "RESET_REQUEST";
+
+interface State {
+  isRequestInProgress: boolean;
+  requestStep: RequestStep;
+}
+
+interface Action {
+  type: ActionTypes[keyof ActionTypes];
+  // type: ActionTypes;
+}
 
 const initialState: State = {
   isRequestInProgress: false,
-  requestStep: 'idle',
+  requestStep: "idle",
 };
+
 
 function requestReducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'START_REQUEST':
-      return { ...state, isRequestInProgress: true, requestStep: 'start' };
-    case 'PENDING_REQUEST':
-      return { ...state, isRequestInProgress: true, requestStep: 'pending' };
-    case 'FINISH_REQUEST':
-      return { ...state, isRequestInProgress: false, requestStep: 'finished' };
-    case 'RESET_REQUEST':
-      return { ...state, isRequestInProgress: false, requestStep: 'idle' };
+    case "START_REQUEST":
+      return { ...state, isRequestInProgress: true, requestStep: "start" };
+    case "PENDING_REQUEST":
+      return { ...state, isRequestInProgress: true, requestStep: "pending" };
+    case "FINISH_REQUEST":
+      return { ...state, isRequestInProgress: false, requestStep: "finished" };
+    case "RESET_REQUEST":
+      return { ...state, isRequestInProgress: false, requestStep: "idle" };
     default:
       return state;
   }
 }
 
+
 export function RequestComponent() {
-  const [requestState, requestDispatch] = useReducer(requestReducer, initialState);
+  const [requestState, requestDispatch] = useReducer(
+    requestReducer,
+    initialState
+  );
 
   const startRequest = () => {
-    requestDispatch({ type: 'START_REQUEST' });
-    // Імітуємо запит до сервера
+    requestDispatch({ type: "START_REQUEST" });
+
     setTimeout(() => {
-      requestDispatch({ type: 'PENDING_REQUEST' });
-      // Імітуємо отримання відповіді від сервера
+      requestDispatch({ type: "PENDING_REQUEST" });
+
       setTimeout(() => {
-        requestDispatch({ type: 'FINISH_REQUEST' });
+        requestDispatch({ type: "FINISH_REQUEST" });
       }, 2000);
     }, 2000);
   };
 
   const resetRequest = () => {
-    requestDispatch({ type: 'RESET_REQUEST' });
+    requestDispatch({ type: "RESET_REQUEST" });
   };
 
   return (
